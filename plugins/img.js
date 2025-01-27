@@ -1,53 +1,50 @@
-const { cmd } = require('../command');
-const axios = require('axios');
-const { Buffer } = require('buffer');
-
-const GOOGLE_API_KEY = 'AIzaSyDebFT-uY_f82_An6bnE9WvVcgVbzwDKgU'; // Replace with your Google API key
-const GOOGLE_CX = '45b94c5cef39940d1'; // Replace with your Google Custom Search Engine ID
+const { cmd, commands } = require("../command");
+const axios = require("axios");
 
 cmd({
     pattern: "img",
-    desc: "Search and send images from Google.",
-    react: "🖼️",
-    category: "media",
+    alias: ["pinterest", "image", "searchpin"],
+    react: "🔍",
+    desc: "Search and download Pinterest images using the API.",
+    category: "fun",
+    use: ".pin <keywords>",
     filename: __filename
-},
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+}, async (conn, mek, m, { reply, args, from }) => {
     try {
-        if (!q) return reply("✦ Silva ✦ Spark ✦ MD ✦ Please provide a search query for the image.");
-
-        // Fetch image URLs from Google Custom Search API
-        const searchQuery = encodeURIComponent(q);
-        const url = `https://www.googleapis.com/customsearch/v1?q=${searchQuery}&cx=${GOOGLE_CX}&key=${GOOGLE_API_KEY}&searchType=image&num=5`;
-        
-        const response = await axios.get(url);
-        const data = response.data;
-
-        if (!data.items || data.items.length === 0) {
-            return reply("No images found for your query.");
+        const query = args.join(" ");
+        if (!query) {
+            return reply("*❗ Please provide a search query.*");
         }
 
-        // Send images
-        for (let i = 0; i < data.items.length; i++) {
-            const imageUrl = data.items[i].link;
+        // Notify user that the request is being processed
+        await reply(`*🔎 Searching and downloading images for:* ${query}...`);
 
-            // Download the image
-            const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-            const buffer = Buffer.from(imageResponse.data, 'binary');
+        const apiUrl = `https://api.diioffc.web.id/api/search/pinterest?query=${encodeURIComponent(query)}`;
+        const response = await axios.get(apiUrl);
 
-            // Send the image with a footer
-            await conn.sendMessage(from, {
-                image: buffer,
-                caption: `
-            🌟 *✦ Silva ✦ Spark ✦ MD ✦ Image ${i + 1} from your search!* 🌟
+        // Validate the response and ensure results exist
+        if (!response.data || !response.data.result || response.data.result.length === 0) {
+            return reply("*⚠️ No results found. Please try using different keywords.*");
+        }
 
- ©✦ Silva ✦ Spark ✦ MD ✦
-`
-}, { quoted: mek });
-}
+        const results = response.data.result;
 
-    } catch (e) {
-        console.error(e);
-        reply(`Error: ${e.message}`);
+        // Randomly select up to 5 images from the results
+        const selectedImages = results.sort(() => 0.5 - Math.random()).slice(0, 5);
+
+        // Send each selected image to the user
+        for (const image of selectedImages) {
+            await conn.sendMessage(
+                from,
+                {
+                    image: { url: image.src },
+                    caption: `*🔎 Results for:* ${query}\n\n> *Powered by Silva Spark MD ✨*`
+                },
+                { quoted: mek }
+            );
+        }
+    } catch (error) {
+        console.error(error);
+        reply("*❌ An error occurred while processing your request. Please try again later.*");
     }
 });
