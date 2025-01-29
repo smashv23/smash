@@ -1,15 +1,37 @@
+// Filename: youtube_downloader.js
+
 const { cmd } = require('../command');
 const yts = require('yt-search');
 const { fetchJson } = require("../lib/functions");
 const axios = require("axios");
 
 /**
- * Fetch direct YouTube video/audio download link.
+ * Fetch YouTube MP3 Download Link
+ * @param {string} url - The YouTube video URL.
+ * @returns {Promise<string>} - Direct MP3 download link.
+ */
+async function downloadYouTubeMP3(url) {
+    try {
+        const response = await fetchJson(`https://www.dark-yasiya-api.site/download/ytmp3?url=${url}`);
+
+        if (!response || !response.result || !response.result.dl_link) {
+            throw new Error("Failed to get MP3 link.");
+        }
+
+        return response.result.dl_link;
+    } catch (error) {
+        console.error("MP3 Download Error:", error);
+        return null;
+    }
+}
+
+/**
+ * Fetch YouTube Video Download Link
  * @param {string} url - The YouTube video URL.
  * @param {string} format - Video quality (e.g., "360p", "720p").
- * @returns {Promise<string>} - Direct download link.
+ * @returns {Promise<string>} - Direct MP4 download link.
  */
-async function downloadYouTube(url, format) {
+async function downloadYouTubeMP4(url, format) {
     try {
         if (!url || !format) throw new Error("URL and format are required.");
 
@@ -17,11 +39,11 @@ async function downloadYouTube(url, format) {
         const params = { button: 1, start: 1, end: 1, format: quality, url };
         const headers = { 'User-Agent': "Mozilla/5.0 (Linux; Android 10) Chrome/124.0.0.0" };
 
-        // Fetch video ID
         const response = await axios.get("https://ab.cococococ.com/ajax/download.php", { params, headers });
+        if (!response.data.id) throw new Error("Invalid response from server.");
+
         const videoId = response.data.id;
 
-        // Poll for download completion
         async function checkProgress() {
             try {
                 const progressResponse = await axios.get("https://p.oceansaver.in/ajax/progress.php", {
@@ -38,8 +60,8 @@ async function downloadYouTube(url, format) {
 
         return await checkProgress();
     } catch (error) {
-        console.error("Error:", error);
-        return { error: error.message };
+        console.error("MP4 Download Error:", error);
+        return null;
     }
 }
 
@@ -65,13 +87,13 @@ function normalizeYouTubeLink(url) {
 }
 
 /**
- * Command: 🎵 Download YouTube Audio (MP3)
+ * 🎵 Download YouTube Audio (MP3)
  */
 cmd({
     pattern: 'song',
     alias: "play",
     desc: "🎧 Download songs from YouTube",
-    react: '🎶',
+    react: '🎼',
     category: 'download',
     filename: __filename
 }, async (bot, message, args, { from, q, reply }) => {
@@ -82,8 +104,18 @@ cmd({
         const video = searchResults.videos[0];
         if (!video) return reply("⚠️ No video found.");
 
-        const downloadLink = await fetchJson(`https://www.dark-yasiya-api.site/download/ytmp3?url=${video.url}`);
-        await bot.sendMessage(from, { audio: { url: downloadLink.result.dl_link }, mimetype: "audio/mpeg" }, { quoted: message });
+        reply("⏳ Downloading audio...");
+
+        const mp3Link = await downloadYouTubeMP3(video.url);
+        if (!mp3Link) return reply("❌ Failed to download audio.");
+
+        await bot.sendMessage(from, {
+            audio: { url: mp3Link },
+            mimetype: "audio/mpeg",
+            fileName: `${video.title}.mp3`
+        }, { quoted: message });
+
+        reply("✅ Audio sent successfully!");
     } catch (error) {
         console.error(error);
         reply("⚠️ Error processing request.");
@@ -91,12 +123,12 @@ cmd({
 });
 
 /**
- * Command: 🎥 Download YouTube Video (MP4)
+ * 🎥 Download YouTube Video (MP4)
  */
 cmd({
     pattern: "video",
     desc: "📽️ Download YouTube videos",
-    react: '🎬',
+    react: '🎞️',
     category: "download",
     filename: __filename
 }, async (bot, message, args, { from, q, reply }) => {
@@ -107,73 +139,21 @@ cmd({
         const video = searchResults.videos[0];
         if (!video) return reply("⚠️ No video found.");
 
-        // Display quality options
-        let qualityOptions = `🎬 *Select video quality:*\n\n` +
-            `1️⃣ 360p\n` +
-            `2️⃣ 480p\n` +
-            `3️⃣ 720p\n` +
-            `4️⃣ 1080p\n\n` +
-            `📂 *Download as Document:*\n` +
-            `5️⃣ 360p\n` +
-            `6️⃣ 480p\n` +
-            `7️⃣ 720p\n` +
-            `8️⃣ 1080p\n\n` +
-            `🔹 Reply with a number to choose.`;
+        reply("⏳ Downloading video...");
 
-        const selectionMessage = await bot.sendMessage(from, {
-            image: { url: video.thumbnail },
-            caption: qualityOptions
+        const mp4Link = await downloadYouTubeMP4(video.url, "720p");
+        if (!mp4Link) return reply("❌ Failed to download video.");
+
+        await bot.sendMessage(from, {
+            video: { url: mp4Link },
+            caption: `✅ *Download complete!*\n🎬 *Title:* ${video.title}`
         }, { quoted: message });
 
-        const selectionMessageId = selectionMessage.key.id;
-
-        // Capture user selection
-        bot.ev.on('messages.upsert', async (msg) => {
-            const receivedMsg = msg.messages[0];
-            if (!receivedMsg.message) return;
-
-            const userResponse = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
-            const senderId = receivedMsg.key.remoteJid;
-            const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === selectionMessageId;
-
-            if (isReplyToBot) {
-                let quality;
-                switch (userResponse) {
-                    case "1": quality = "360p"; break;
-                    case "2": quality = "480p"; break;
-                    case "3": quality = "720p"; break;
-                    case "4": quality = "1080p"; break;
-                    case "5": quality = "360p"; break;
-                    case "6": quality = "480p"; break;
-                    case "7": quality = "720p"; break;
-                    case "8": quality = "1080p"; break;
-                    default:
-                        return await reply("❌ Invalid selection. Try again.");
-                }
-
-                const downloadUrl = await downloadYouTube(video.url, quality);
-                if (!downloadUrl) return reply("⚠️ Download failed.");
-
-                if (["5", "6", "7", "8"].includes(userResponse)) {
-                    await bot.sendMessage(senderId, {
-                        document: { url: downloadUrl },
-                        mimetype: "video/mp4",
-                        fileName: `${video.title}.mp4`,
-                        caption: `✅ *Download complete!*\n🎬 *Title:* ${video.title}`
-                    }, { quoted: receivedMsg });
-                } else {
-                    await bot.sendMessage(senderId, {
-                        video: { url: downloadUrl },
-                        caption: `✅ *Download complete!*\n🎬 *Title:* ${video.title}`
-                    }, { quoted: receivedMsg });
-                }
-            }
-        });
-
+        reply("✅ Video sent successfully!");
     } catch (error) {
         console.error(error);
         reply("⚠️ Error processing request.");
     }
 });
 
-module.exports = { downloadYouTube };
+module.exports = { downloadYouTubeMP3, downloadYouTubeMP4 };
