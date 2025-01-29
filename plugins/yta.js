@@ -2,7 +2,6 @@ const config = require('../config');
 const { cmd } = require('../command');
 const { ytsearch, ytmp3, ytmp4 } = require('@dark-yasiya/yt-dl.js'); 
 
-
 cmd({
     pattern: "play3",
     alias: ["audio2","song2","ytsong"],
@@ -13,38 +12,51 @@ cmd({
     filename: __filename
 },
 async(conn, mek, m,{ from, prefix, quoted, q, reply }) => {
-try{
-
-if(!q) return await reply("Please give me Yt url or Name")
-	
-const yt = await ytsearch(q);
-if(yt.results.length < 1) return reply("Results is not found !")
-
-let yts = yt.results[0]  
-const ytdl = await ytmp3(yts.url)
-		
-let ytmsg = `╭━━━〔 *SILVA SPARK MD* 〕━━━┈⊷
+try {
+    if(!q) return await reply("Please give me Yt url or Name");
+    
+    const yt = await ytsearch(q);
+    if(yt.results.length < 1) return reply("Results not found!");
+    
+    let yts = yt.results[0];  
+    const ytdl = await ytmp3(yts.url);
+    
+    // Validate download URL
+    if(!ytdl?.download?.url) return reply("Error fetching audio URL");
+    
+    let ytmsg = `╭━━━〔 *SILVA SPARK MD* 〕━━━┈⊷
 ┃▸┃๏ *MUSIC DOWNLOADER*
 ╭━━❐━⪼
-┇๏ *Tital* -  ${yts.title}
+┇๏ *Title* -  ${yts.title}
 ┇๏ *Duration* - ${yts.timestamp}
 ┇๏ *Views* -  ${yts.views}
 ┇๏ *Author* -  ${yts.author.name} 
 ┇๏ *Link* -  ${yts.url}
 ╰━━❑━⪼
-> *© SILVA SPARK ♡*`
-// SEND DETAILS
-await conn.sendMessage(from, { image: { url: yts.thumbnail || yts.image || '' }, caption: `${ytmsg}`}, { quoted: mek });
-
-// SEND AUDIO TYPE
-await conn.sendMessage(from, { audio: { url: ytdl.download.url }, mimetype: "audio/mpeg" }, { quoted: mek })
-
-// SEND DOC TYPE
-await conn.sendMessage(from, { document: { url: ytdl.download.url }, mimetype: "audio/mpeg", fileName: ytdl.result.title + '.mp3', caption: `> *© Pᴏᴡᴇʀᴇᴅ Bʏ SILVA SPARK ♡*` }, { quoted: mek })
-
-
+> *© SILVA SPARK ♡*`;
+    
+    // Send details with thumbnail
+    await conn.sendMessage(from, { 
+        image: { url: yts.thumbnail || yts.image || '' }, 
+        caption: ytmsg 
+    }, { quoted: mek });
+    
+    // Send as audio message
+    await conn.sendMessage(from, { 
+        audio: { url: ytdl.download.url }, 
+        mimetype: "audio/mpeg",
+        ptt: false
+    }, { quoted: mek });
+    
+    // Send as document
+    await conn.sendMessage(from, {
+        document: { url: ytdl.download.url },
+        mimetype: "audio/mpeg",
+        fileName: `${yts.title.replace(/[^a-zA-Z0-9]/g, '_')}.mp3`, // Sanitize filename
+        caption: `> *© Powered By SILVA SPARK ♡*`
+    }, { quoted: mek });
+    
 } catch (e) {
-console.log(e)
-reply(e)
-}}
-)
+    console.error(e);
+    reply("Error processing request: " + e.message);
+}});
