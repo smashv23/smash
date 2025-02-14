@@ -59,7 +59,7 @@ const {
       });
   }
   
-  // Clear the temp directory every 5 minutes
+  // Clear the temp directory every 5 minute
   setInterval(clearTempDir, 5 * 60 * 1000);
   
   //===================SESSION-AUTH============================
