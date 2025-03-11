@@ -1,106 +1,85 @@
-const axios = require("axios");
-const yts = require("yt-search");
-const { youtube } = require("btch-downloader");
-const { cmd } = require('../command');
+import axios from "axios";
+import ytSearch from "yt-search";
+import { cmd } from "../command";
 
 cmd({
-  pattern: 'audio3',
-  alias: ['spotify', "ytmusic", "play"],
-  react: '🎵',
+  pattern: "audio3",
+  alias: ["spotify", "ytmusic", "play"],
+  react: "🎵",
   desc: "Fetch audio from Spotify or YouTube",
   category: "media",
   filename: __filename
 }, async (client, message, details, context) => {
-  const { q, from, reply } = context;
+  const { 
+    from, q, reply 
+  } = context;
 
   if (!q) {
-    return reply("Please provide a title or link (Spotify/YouTube)!");
+    return reply("❌ What song do you want to download?");
   }
 
-  reply("💎 Sɪʟᴠᴀ Sᴘᴀʀᴋ MD 💎 Fetching audio... 🎧");
-
-  let spotifySent = false;
-  let youtubeSent = false;
+  reply("🔄 *Silva Spark Bot fetching your audio...* \n\nP*lease wait...* 🎧");
 
   try {
-    // Fetch from Spotify
-    const spotifyResponse = await axios.get(
-      `https://spotifyapi.caliphdev.com/api/search/tracks?q=${encodeURIComponent(q)}`
-    );
-    const spotifyTrack = spotifyResponse.data?.[0]; // Safely access first track
+    let search = await ytSearch(q);
+    let video = search.videos[0];
 
-    if (spotifyTrack) {
-      const trackStream = await axios({
-        url: `https://spotifyapi.caliphdev.com/api/download/track?url=${encodeURIComponent(spotifyTrack.url)}`,
-        method: "GET",
-        responseType: 'stream'
-      });
+    if (!video) return reply("❌ No results found. Please refine your search.");
 
-      if (trackStream.headers["content-type"]?.includes("audio/mpeg")) {
-        await client.sendMessage(from, {
-          audio: trackStream.data,
-          mimetype: "audio/mpeg",
-          contextInfo: {
-            externalAdReply: {
-              title: spotifyTrack.title,
-              body: "💎 Sɪʟᴠᴀ Sᴘᴀʀᴋ MD 💎 🥰💖: SPOTIFY",
-              mediaType: 1,
-              sourceUrl: spotifyTrack.url,
-              renderLargerThumbnail: true
-            }
-          }
-        });
-        spotifySent = true;
-      } else {
-        console.log("Spotify stream not in audio/mpeg format.");
+    let link = video.url;
+    let apis = [
+      `https://apis.davidcyriltech.my.id/youtube/mp3?url=${link}`,
+      `https://api.ryzendesu.vip/api/downloader/ytmp3?url=${link}`
+    ];
+
+    for (const api of apis) {
+      try {
+        let { data } = await axios.get(api);
+
+        if (data.status === 200 || data.success) {
+          let audioUrl = data.result?.downloadUrl || data.url;
+          let songData = {
+            title: data.result?.title || video.title,
+            artist: data.result?.author || video.author.name,
+            thumbnail: data.result?.image || video.thumbnail,
+            videoUrl: link
+          };
+
+          // Send metadata & thumbnail
+          await client.sendMessage(from, {
+            image: { url: songData.thumbnail },
+            caption: `SYLIVANUS THE SILVA SPARK BOT\n╭═════════════════⊷\n║ 🎶 *Title:* ${songData.title}\n║ 🎤 *Artist:* ${songData.artist}\n║ 🔗 *No URL Sharing*\n╰═════════════════⊷\n*Powered by SILVA SPARK BOT*`
+          });
+
+          reply("📤 *Sending your audio...* 🎼");
+
+          // Send as an audio file
+          await client.sendMessage(from, {
+            audio: { url: audioUrl },
+            mimetype: "audio/mp4"
+          });
+
+          reply("📤 *Sending your MP3 file...* 🎶");
+
+          // Send as a document file
+          await client.sendMessage(from, {
+            document: { url: audioUrl },
+            mimetype: "audio/mp3",
+            fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`
+          });
+
+          reply("✅ *Silva Spark – World-class bot just successfully sent you what you requested! 🎶*");
+          return; // Stop execution if successful
+        }
+      } catch (e) {
+        console.error(`API Error (${api}):`, e.message);
+        continue; // Try next API if one fails
       }
-    } else {
-      console.log("No Spotify track found.");
     }
+
+    // If all APIs fail
+    reply("⚠️ An error occurred. All APIs might be down or unable to process the request.");
   } catch (error) {
-    console.error("Spotify Error:", error.message);
-  }
-
-  try {
-    // Fetch from YouTube
-    const youtubeSearchResults = await yts(q);
-    const youtubeVideo = youtubeSearchResults.videos[0];
-
-    if (youtubeVideo && youtubeVideo.seconds < 3600) { // Video duration < 1 hour
-      const youtubeAudio = await youtube(youtubeVideo.url);
-
-      if (youtubeAudio?.mp3) {
-        await client.sendMessage(from, {
-          audio: { url: youtubeAudio.mp3 },
-          mimetype: "audio/mpeg",
-          contextInfo: {
-            externalAdReply: {
-              title: youtubeVideo.title,
-              body: "💎 Sɪʟᴠᴀ Sᴘᴀʀᴋ MD 💎🥰: YOUTUBE",
-              mediaType: 1,
-              sourceUrl: youtubeVideo.url,
-              renderLargerThumbnail: true
-            }
-          }
-        });
-        youtubeSent = true;
-      } else {
-        console.log("Failed to fetch YouTube audio.");
-      }
-    } else {
-      console.log("No suitable YouTube results found.");
-    }
-  } catch (error) {
-    console.error("YouTube Error:", error.message);
-  }
-
-  if (!spotifySent && !youtubeSent) {
-    reply("Failed to fetch audio from both Spotify and YouTube.");
-  } else if (spotifySent && youtubeSent) {
-    reply("Both Spotify and YouTube audio sent successfully.");
-  } else if (spotifySent) {
-    reply("💎 Sɪʟᴠᴀ Sᴘᴀʀᴋ MD 💎: Spotify audio sent successfully.");
-  } else if (youtubeSent) {
-    reply("💎 Sɪʟᴠᴀ Sᴘᴀʀᴋ MD 💎: YouTube audio sent successfully.");
+    reply("❌ Download failed\n" + error.message);
   }
 });
