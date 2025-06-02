@@ -23,6 +23,16 @@
       "required": false,
       "value": "> SILVA SPARK IS SPARKING ACTIVE AND ALIVE⚡"
     },
+    "ANTIDELETE_PRIVATE": {
+      "description": "when someone deletes a message on dm the bot restores it.",
+      "required": true,
+      "value": "true"
+    },
+    "ANTIDELETE_GROUP": {
+      "description": "when someone deletes a message in group the bot restores it.",
+      "required": true,
+      "value": "true"
+    },
     
     "PREFIX": {
       "description": "paste your bot prefix note! Don't apply null prefix.",
