@@ -1,6 +1,6 @@
-import axios from "axios";
-import ytSearch from "yt-search";
-import { cmd } from "../command";
+const axios = require("axios");
+const ytSearch = require("yt-search");
+const { cmd } = require("../command");
 
 cmd({
   pattern: "audio3",
@@ -10,20 +10,14 @@ cmd({
   category: "media",
   filename: __filename
 }, async (client, message, details, context) => {
-  const { 
-    from, q, reply 
-  } = context;
+  const { from, q, reply } = context;
 
-  if (!q) {
-    return reply("❌ What song do you want to download?");
-  }
-
-  reply("🔄 *Silva Spark Bot fetching your audio...* \n\nP*lease wait...* 🎧");
+  if (!q) return reply("❌ What song do you want to download?");
+  reply("🔄 *Silva Spark Bot fetching your audio...*\n\n*Please wait...* 🎧");
 
   try {
     let search = await ytSearch(q);
     let video = search.videos[0];
-
     if (!video) return reply("❌ No results found. Please refine your search.");
 
     let link = video.url;
@@ -35,7 +29,6 @@ cmd({
     for (const api of apis) {
       try {
         let { data } = await axios.get(api);
-
         if (data.status === 200 || data.success) {
           let audioUrl = data.result?.downloadUrl || data.url;
           let songData = {
@@ -45,7 +38,6 @@ cmd({
             videoUrl: link
           };
 
-          // Send metadata & thumbnail
           await client.sendMessage(from, {
             image: { url: songData.thumbnail },
             caption: `SYLIVANUS THE SILVA SPARK BOT\n╭═════════════════⊷\n║ 🎶 *Title:* ${songData.title}\n║ 🎤 *Artist:* ${songData.artist}\n║ 🔗 *No URL Sharing*\n╰═════════════════⊷\n*Powered by SILVA SPARK BOT*`
@@ -53,7 +45,6 @@ cmd({
 
           reply("📤 *Sending your audio...* 🎼");
 
-          // Send as an audio file
           await client.sendMessage(from, {
             audio: { url: audioUrl },
             mimetype: "audio/mp4"
@@ -61,7 +52,6 @@ cmd({
 
           reply("📤 *Sending your MP3 file...* 🎶");
 
-          // Send as a document file
           await client.sendMessage(from, {
             document: { url: audioUrl },
             mimetype: "audio/mp3",
@@ -69,15 +59,14 @@ cmd({
           });
 
           reply("✅ *Silva Spark – World-class bot just successfully sent you what you requested! 🎶*");
-          return; // Stop execution if successful
+          return;
         }
       } catch (e) {
         console.error(`API Error (${api}):`, e.message);
-        continue; // Try next API if one fails
+        continue;
       }
     }
 
-    // If all APIs fail
     reply("⚠️ An error occurred. All APIs might be down or unable to process the request.");
   } catch (error) {
     reply("❌ Download failed\n" + error.message);
