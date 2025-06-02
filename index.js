@@ -111,7 +111,7 @@ console.log("Session downloaded ✅")
   console.log('Bot connected to whatsapp ✅')
   
   let up = `*Hello there ✦ Silva ✦ Spark ✦ MD ✦ User! \ud83d\udc4b\ud83c\udffb* \n\n> This is auser friendly whatsapp bot created by Silva Tech Inc \ud83c\udf8a, Meet ✦ Silva ✦ Spark ✦ MD ✦ WhatsApp Bot.\n\n *Thanks for using ✦ Silva ✦ Spark ✦ MD ✦ \ud83d\udea9* \n\n> follow WhatsApp Channel :- 💖\n \nhttps://whatsapp.com/channel/0029VaAkETLLY6d8qhLmZt2v\n\n- *YOUR PREFIX:* = ${prefix}\n\nDont forget to give star to repo ⬇️\n\nhttps://github.com/SilvaTechB/silva-spark-md\n\n> © Powered BY ✦ Silva ✦ Spark ✦ MD ✦ \ud83d\udda4`;
-  conn.sendMessage(conn.user.id, { image: { url: `https://i.imgur.com/PEZ5QL2.jpeg` }, caption: up })
+  conn.sendMessage(conn.user.id, { image: { url:`https://files.catbox.moe/0vldgh.jpeg` }, caption: up })
   }
   })
   conn.ev.on('creds.update', saveCreds)  
@@ -136,7 +136,7 @@ console.log("Session downloaded ✅")
   if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_STATUS_REPLY === "true"){
   const user = mek.key.participant
   const text = `${config.AUTO_STATUS__MSG}`
-  await conn.sendMessage(user, { text: text, react: { text: '💜', key: mek.key } }, { quoted: mek })
+  await conn.sendMessage(user, { text: text, react: { text: '✈️', key: mek.key } }, { quoted: mek })
             }
       let jawadik = mek.message.viewOnceMessageV2
       let jawadik1 = mek.mtype === "viewOnceMessage"
