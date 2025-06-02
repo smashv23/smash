@@ -19,7 +19,7 @@ cmd({
         // Notify user that the request is being processed
         await reply(`*🔎 Searching and downloading images for:* ${query}...`);
 
-        const apiUrl = `https://api.diioffc.web.id/api/search/pinterest?query=${encodeURIComponent(query)}`;
+        const apiUrl = `https://silva-api.vercel.app/download/wallpaper?text=${encodeURIComponent(query)}`;
         const response = await axios.get(apiUrl);
 
         // Validate the response and ensure results exist
