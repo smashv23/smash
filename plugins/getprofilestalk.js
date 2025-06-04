@@ -2,66 +2,52 @@ const { cmd } = require('../command');
 
 cmd({
     pattern: "getpp",
-    desc: "📸 Fetch the profile picture of a user",
-    react: "💥",
+    desc: "🖼️ Get profile picture of any user",
+    react: "📸",
     category: "User",
     filename: __filename
 },
 async (conn, mek, m, { from, isGroup, mentionByTag, quoted, sender, reply }) => {
     try {
+        // 🧠 Identify the target user
         let target;
-
         if (isGroup) {
-            if (mentionByTag && mentionByTag.length > 0) {
-                target = mentionByTag[0];
-            } else if (quoted) {
-                target = quoted.sender;
-            } else {
-                target = sender;
-            }
+            target = mentionByTag?.[0] || quoted?.sender || sender;
         } else {
-            target = from;
+            target = sender;
         }
 
-        if (!target) return reply("❗ Target user not found.");
+        if (!target.includes('@')) target += '@s.whatsapp.net';
 
-        console.log("Target JID:", target);
-
-        // Fix malformed JIDs
-        if (!target.includes('@')) {
-            target = target + '@s.whatsapp.net';
-            console.log("Fixed Target JID:", target);
-        }
-
-        let ppUrl;
+        // 🌐 Attempt to get profile picture URL
+        let profilePic;
         try {
-            ppUrl = await conn.profilePictureUrl(target, 'image');
-            console.log("Profile Pic URL:", ppUrl);
-        } catch (e) {
-            console.log("❌ Error fetching profile picture:", e);
-            return reply("🚫 Couldn’t access profile picture. The user might have none or restricted privacy settings.");
+            profilePic = await conn.profilePictureUrl(target, 'image');
+        } catch {
+            return reply("🚫 No profile picture found or it's private.");
         }
 
+        // 🎯 Get display name
         const name = await conn.getName(target);
-        console.log("Fetched Name:", name);
 
+        // 📩 Send the profile picture
         await conn.sendMessage(from, {
-            image: { url: ppUrl },
-            caption: `👤 *Profile Picture of ${name}*`,
+            image: { url: profilePic },
+            caption: `🖼️ *Profile Picture of ${name}*`,
             contextInfo: {
                 mentionedJid: [target],
-                forwardingScore: 999,
+                forwardingScore: 500,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
                     newsletterJid: '120363200367779016@newsletter',
-                    newsletterName: 'Silva MD Bot',
-                    serverMessageId: 143
+                    newsletterName: 'Silva Spark MD',
+                    serverMessageId: 101
                 }
             }
         }, { quoted: m });
 
-    } catch (err) {
-        console.error("❌ Uncaught Error in getpp:", err);
-        reply("⚠️ An unexpected error occurred. Try again or report to the admin.");
+    } catch (error) {
+        console.error("❌ getpp error:", error);
+        return reply("⚠️ Unexpected error occurred. Try again.");
     }
 });
