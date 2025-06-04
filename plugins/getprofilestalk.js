@@ -2,33 +2,35 @@ const { cmd } = require('../command');
 
 cmd({
     pattern: "getpp",
-    desc: "📸 Get the profile picture of a user",
+    desc: "📸 Fetch the profile picture of a user",
     react: "🖼️",
     category: "User",
     filename: __filename
 },
-async (conn, mek, m, { from, mentionByTag, isGroup, reply, quoted, sender }) => {
+async (conn, mek, m, { from, isGroup, mentionByTag, quoted, sender, reply }) => {
     try {
-        let user;
+        // Identify target user
+        const target = isGroup
+            ? mentionByTag?.[0] || quoted?.sender || sender
+            : from;
 
-        if (isGroup) {
-            user = mentionByTag && mentionByTag.length
-                ? mentionByTag[0]
-                : quoted
-                    ? quoted.sender
-                    : sender;
-        } else {
-            user = from;
+        // Try to fetch profile picture
+        let ppUrl;
+        try {
+            ppUrl = await conn.profilePictureUrl(target, 'image');
+        } catch {
+            return reply("🚫 Unable to access profile picture. They may not have one, or their privacy settings restrict it.");
         }
 
-        const pp = await conn.profilePictureUrl(user, 'image');
-        const name = await conn.getName(user);
+        // Get name for caption
+        const name = await conn.getName(target);
 
+        // Send the profile picture
         await conn.sendMessage(from, {
-            image: { url: pp },
+            image: { url: ppUrl },
             caption: `👤 *Profile Picture of ${name}*`,
             contextInfo: {
-                mentionedJid: [user],
+                mentionedJid: [target],
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
@@ -40,7 +42,7 @@ async (conn, mek, m, { from, mentionByTag, isGroup, reply, quoted, sender }) => 
         }, { quoted: m });
 
     } catch (err) {
-        console.error(err);
-        return reply("❌ Couldn't fetch profile picture. Maybe the user has no profile picture or their privacy settings are restricted.");
+        console.error("❌ Error in .getpp command:", err);
+        reply("⚠️ An unexpected error occurred. Please try again later.");
     }
 });
