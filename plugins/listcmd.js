@@ -297,7 +297,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.imgur.com/PEZ5QL2.jpeg` },
+                image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
