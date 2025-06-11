@@ -7,7 +7,7 @@ const os = require('os');
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const version = pkg.version || "1.0.0";
 
-// Uptime helper
+// Uptime formatter
 function formatUptime(ms) {
     let sec = Math.floor((ms / 1000) % 60);
     let min = Math.floor((ms / (1000 * 60)) % 60);
@@ -15,7 +15,7 @@ function formatUptime(ms) {
     return `${hr}h ${min}m ${sec}s`;
 }
 
-// Count available commands
+// Count commands (plugin files)
 const commandCount = Object.keys(require.cache)
     .filter(path => path.includes('/commands/') || path.includes('\\commands\\'))
     .length;
@@ -23,7 +23,7 @@ const commandCount = Object.keys(require.cache)
 cmd({
     pattern: "repo",
     alias: ["sc", "script", "info"],
-    desc: "Showcase Silva Spark MD repository details",
+    desc: "Show Silva Spark MD repository details",
     category: "main",
     react: "👨‍💻",
     filename: __filename
@@ -33,7 +33,7 @@ async (conn, mek, m, { from, quoted, reply }) => {
         // GitHub repo stats
         const { data } = await axios.get('https://api.github.com/repos/SilvaTechB/silva-md-bot');
         const { stargazers_count, forks_count } = data;
-        const users = Math.round((stargazers_count + forks_count) * 2.5);
+        const users = Math.round((stargazers_count + forks_count) * 5); // ×5 stats
 
         const uptime = formatUptime(process.uptime() * 1000);
         const platform = os.platform().toUpperCase();
@@ -54,35 +54,40 @@ async (conn, mek, m, { from, quoted, reply }) => {
 ┃ 💽 *System*: ${platform} (${arch})
 ┗━━━━━━━━━━━━━━━━━━━━━━✦
 
-✨ *Silva Spark MD* – the smart WhatsApp bot built for speed, style, and stability.
+✨ *Silva Spark MD* – your feature-packed WhatsApp bot for automation, fun, and more!
 
-📌 *Original MD Repo*:
+📌 *Main MD Repo*:
 https://github.com/SilvaTechB/silva-md-bot
 
-🧠 *Tip*: Fork & ⭐ to support!
-💖 Thanks for using Silva Spark MD!
+💡 *Tip*: Fork & ⭐ to show love!
+💖 Thanks for choosing Silva Spark MD!
         `.trim();
 
-        // Text reply
-        await conn.sendMessage(from, { text: msg }, { quoted: mek });
-
-        // Fancy image
-        await conn.sendMessage(from, {
-            image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
-            caption: "🌟 *Your smart WhatsApp bot companion!*",
-            contextInfo: {
-                mentionedJid: [m.sender],
-                forwardingScore: 999,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363200367779016@newsletter',
-                    newsletterName: 'SILVA SPARK MD 💖🦄',
-                    serverMessageId: 143
-                }
+        const contextTag = {
+            mentionedJid: [m.sender],
+            forwardingScore: 999,
+            isForwarded: true,
+            forwardedNewsletterMessageInfo: {
+                newsletterJid: '120363200367779016@newsletter',
+                newsletterName: 'SILVA SPARK MD 💖🦄',
+                serverMessageId: 143
             }
+        };
+
+        // Send the repo stats text with forward tag
+        await conn.sendMessage(from, {
+            text: msg,
+            contextInfo: contextTag
         }, { quoted: mek });
 
-        // Audio PTT
+        // Send a related image with forward tag
+        await conn.sendMessage(from, {
+            image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
+            caption: "🌟 *Silva Spark MD: Powering smart chats everywhere!*",
+            contextInfo: contextTag
+        }, { quoted: mek });
+
+        // Send the audio response (voice note)
         await conn.sendMessage(from, {
             audio: { url: 'https://files.catbox.moe/hpwsi2.mp3' },
             mimetype: 'audio/mp4',
