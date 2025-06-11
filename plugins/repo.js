@@ -1,5 +1,24 @@
 const axios = require('axios');
 const { cmd } = require('../command');
+const fs = require('fs');
+const os = require('os');
+
+// Read package version
+const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+const version = pkg.version || "1.0.0";
+
+// Uptime helper
+function formatUptime(ms) {
+    let sec = Math.floor((ms / 1000) % 60);
+    let min = Math.floor((ms / (1000 * 60)) % 60);
+    let hr = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    return `${hr}h ${min}m ${sec}s`;
+}
+
+// Count available commands
+const commandCount = Object.keys(require.cache)
+    .filter(path => path.includes('/commands/') || path.includes('\\commands\\'))
+    .length;
 
 cmd({
     pattern: "repo",
@@ -11,47 +30,46 @@ cmd({
 },
 async (conn, mek, m, { from, quoted, reply }) => {
     try {
-        // Fetch live repo data from GitHub
+        // GitHub repo stats
         const { data } = await axios.get('https://api.github.com/repos/SilvaTechB/silva-md-bot');
         const { stargazers_count, forks_count } = data;
-        const userCount = Math.round((stargazers_count + forks_count) * 2.5);
+        const users = Math.round((stargazers_count + forks_count) * 2.5);
 
-        // Stylish message
+        const uptime = formatUptime(process.uptime() * 1000);
+        const platform = os.platform().toUpperCase();
+        const arch = os.arch().toUpperCase();
+
         const msg = `
 ┏━━━『 *👨‍💻 Silva Spark MD Info* 』━━━✦
-┃ 🔗 *GitHub*: 
-┃  https://github.com/SilvaTechB/silva-spark-md
+┃ 🔗 *Repo*: 
+┃   github.com/SilvaTechB/silva-spark-md
 ┃ 
 ┃ ⭐ *Stars*: ${stargazers_count}
 ┃ 🍴 *Forks*: ${forks_count}
-┃ 👥 *Est. Users*: ${userCount}
+┃ 👥 *Est. Users*: ${users}
+┃ 
+┃ ⚙️ *Version*: v${version}
+┃ 📊 *Commands*: ${commandCount}
+┃ 🕓 *Uptime*: ${uptime}
+┃ 💽 *System*: ${platform} (${arch})
 ┗━━━━━━━━━━━━━━━━━━━━━━✦
 
-✨ *Silva Spark MD* is your all-in-one WhatsApp automation bot — 
-easy to use, smart, and open source!
+✨ *Silva Spark MD* – the smart WhatsApp bot built for speed, style, and stability.
 
-📌 *Original MD Repo*: 
+📌 *Original MD Repo*:
 https://github.com/SilvaTechB/silva-md-bot
 
-💡 *Pro Tip*: Fork it, star it ⭐, and contribute to the Spark!
-🎉 *Thanks for supporting Silva Spark MD*!
+🧠 *Tip*: Fork & ⭐ to support!
+💖 Thanks for using Silva Spark MD!
         `.trim();
 
-        // Send main message with buttons
-        await conn.sendMessage(from, {
-            text: msg,
-            footer: "💖 Powered by Silva Tech Inc.",
-            buttons: [
-                { buttonId: "repo", buttonText: { displayText: "🔄 Refresh Repo" }, type: 1 },
-                { buttonId: "menu", buttonText: { displayText: "📜 Main Menu" }, type: 1 }
-            ],
-            headerType: 1
-        }, { quoted: mek });
+        // Text reply
+        await conn.sendMessage(from, { text: msg }, { quoted: mek });
 
-        // Send a matching image
+        // Fancy image
         await conn.sendMessage(from, {
             image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
-            caption: "🚀 *Silva Spark MD – Revolutionizing WhatsApp Automation!*",
+            caption: "🌟 *Your smart WhatsApp bot companion!*",
             contextInfo: {
                 mentionedJid: [m.sender],
                 forwardingScore: 999,
@@ -64,7 +82,7 @@ https://github.com/SilvaTechB/silva-md-bot
             }
         }, { quoted: mek });
 
-        // Send a fancy voice note (PTT)
+        // Audio PTT
         await conn.sendMessage(from, {
             audio: { url: 'https://files.catbox.moe/hpwsi2.mp3' },
             mimetype: 'audio/mp4',
@@ -73,6 +91,6 @@ https://github.com/SilvaTechB/silva-md-bot
 
     } catch (err) {
         console.error("❌ Repo Fetch Error:", err);
-        reply(`🚫 *Could not fetch repo info.*\n\n_Reason_: ${err.message}`);
+        reply(`🚫 *Error fetching repo data:*\n${err.message}`);
     }
 });
