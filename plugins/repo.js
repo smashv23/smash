@@ -1,73 +1,78 @@
 const axios = require('axios');
 const { cmd } = require('../command');
 
-// Repo info
 cmd({
     pattern: "repo",
     alias: ["sc", "script", "info"],
-    desc: "Info about the bot repository",
+    desc: "Showcase Silva Spark MD repository details",
     category: "main",
     react: "👨‍💻",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, reply }) => {
     try {
-        // Fetch repository data from GitHub API
-        const repoResponse = await axios.get('https://api.github.com/repos/SilvaTechB/silva-md-bot');
-        const { stargazers_count, forks_count } = repoResponse.data;
-        const userCount = forks_count * 5; // Estimate user count based on forks
+        // Fetch live repo data from GitHub
+        const { data } = await axios.get('https://api.github.com/repos/SilvaTechB/silva-md-bot');
+        const { stargazers_count, forks_count } = data;
+        const userCount = Math.round((stargazers_count + forks_count) * 2.5);
 
-        // Construct the message
-        const message = `
-*Hello there, Silva Spark User! 👋*
+        // Stylish message
+        const msg = `
+┏━━━『 *👨‍💻 Silva Spark MD Info* 』━━━✦
+┃ 🔗 *GitHub*: 
+┃  https://github.com/SilvaTechB/silva-spark-md
+┃ 
+┃ ⭐ *Stars*: ${stargazers_count}
+┃ 🍴 *Forks*: ${forks_count}
+┃ 👥 *Est. Users*: ${userCount}
+┗━━━━━━━━━━━━━━━━━━━━━━✦
 
-💻 *Silva Spark MD Repository Info*:
-⭐ *Stars*: ${stargazers_count}
-🍴 *Forks*: ${forks_count}
-👥 *Users*: ${userCount}
-🔗 *Repository*: https://github.com/SilvaTechB/silva-spark-md
+✨ *Silva Spark MD* is your all-in-one WhatsApp automation bot — 
+easy to use, smart, and open source!
 
-> This is a substitute for Silva md bot 
+📌 *Original MD Repo*: 
 https://github.com/SilvaTechB/silva-md-bot
-> ✨ Silva Spark WhatsApp Bot – Simple. Smart. Feature-packed. 🚀
-Effortlessly elevate your WhatsApp experience with our cutting-edge bot technology! 🎊
-*💡 Tip: Don’t forget to fork the repo and leave a star to show your support! 🌟*
 
-🙌 Thank you for choosing Silva Spark MD – your ultimate bot companion! 🎉
-        `;
+💡 *Pro Tip*: Fork it, star it ⭐, and contribute to the Spark!
+🎉 *Thanks for supporting Silva Spark MD*!
+        `.trim();
 
-        // Send the repository info as a text message
-        await conn.sendMessage(from, { text: message }, { quoted: mek });
+        // Send main message with buttons
+        await conn.sendMessage(from, {
+            text: msg,
+            footer: "💖 Powered by Silva Tech Inc.",
+            buttons: [
+                { buttonId: "repo", buttonText: { displayText: "🔄 Refresh Repo" }, type: 1 },
+                { buttonId: "menu", buttonText: { displayText: "📜 Main Menu" }, type: 1 }
+            ],
+            headerType: 1
+        }, { quoted: mek });
 
-        // Send a related image with additional newsletter forwarding context
-        await conn.sendMessage(
-            from,
-            {
-                image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
-                caption: message,
-                contextInfo: {
-                    mentionedJid: [m.sender],
-                    forwardingScore: 999,
-                    isForwarded: true,
-                    forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363200367779016@newsletter',
-                        newsletterName: 'SILVA SPARK MD 💖🦄',
-                        serverMessageId: 143
-                    }
+        // Send a matching image
+        await conn.sendMessage(from, {
+            image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
+            caption: "🚀 *Silva Spark MD – Revolutionizing WhatsApp Automation!*",
+            contextInfo: {
+                mentionedJid: [m.sender],
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: '120363200367779016@newsletter',
+                    newsletterName: 'SILVA SPARK MD 💖🦄',
+                    serverMessageId: 143
                 }
-            },
-            { quoted: mek }
-        );
+            }
+        }, { quoted: mek });
 
-        // Send an audio response (PTT voice note)
+        // Send a fancy voice note (PTT)
         await conn.sendMessage(from, {
             audio: { url: 'https://files.catbox.moe/hpwsi2.mp3' },
             mimetype: 'audio/mp4',
             ptt: true
         }, { quoted: mek });
 
-    } catch (error) {
-        console.error('Error fetching repository data:', error);
-        reply(`❌ *Error fetching repository data:* ${error.message}`);
+    } catch (err) {
+        console.error("❌ Repo Fetch Error:", err);
+        reply(`🚫 *Could not fetch repo info.*\n\n_Reason_: ${err.message}`);
     }
 });
