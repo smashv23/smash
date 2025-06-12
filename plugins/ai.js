@@ -37,7 +37,7 @@ cmd({
   reply: _0x2ef217
 }) => {
   try {
-    let _0x3ed650 = await fetchJson("https://api.davidcyriltech.my.id/ai/chatbot?query=" + _0x18efa4);
+    let _0x3ed650 = await fetchJson("https://api.gurusensei.workers.dev/llama?prompt=" + _0x18efa4);
     return _0x2ef217('' + _0x3ed650.data);
   } catch (_0x239e80) {
     console.log(_0x239e80);
