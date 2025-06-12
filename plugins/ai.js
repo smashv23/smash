@@ -15,7 +15,7 @@ cmd({
   try {
     if (!q) return reply("📝 Please provide a prompt. Example: `.ai What is life?`");
 
-    const apiUrl = `https://api.gurusensei.workers.dev/llama?prompt=${encodeURIComponent(q)}`;
+    const apiUrl = `https://ultimetron.guruapi.tech/gpt3?prompt=${encodeURIComponent(text)}`;
     const response = await fetchJson(apiUrl);
 
     if (!response || !response.data) {
