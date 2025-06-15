@@ -20,7 +20,7 @@
 - [💖 Support](#-support-silva-tech-inc)
 - [📊 Project Stats](#-project-stats)
 - [🚀 Getting Started](#-getting-started)
-- [☁️ Deployment Options](#️-deployment-options)b
+- [☁️ Deployment Options](#️-deployment-options)
 - [⚠️ Important Notices](#️-important-notices)
 - [👥 Team](#-team)
 
@@ -108,7 +108,7 @@
     </tr>
     <tr>
       <td>Heroku</td>
-      <td><a href="https://dashboard.heroku.com/new?template=https://github.com/SilvaTechB/silva-spark-md"><img src="https://img.shields.io/badge/Deploy_to-Heroku-430098?style=for-the-badge&logo=heroku"></a></td>
+      <td><a href="https://spark-fork.vercel.app"><img src="https://img.shields.io/badge/Deploy_to-Heroku-430098?style=for-the-badge&logo=heroku"></a></td>
     </tr>
     <tr>
       <td>Koyeb</td>
