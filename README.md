@@ -2,7 +2,7 @@
 # 🌟 Silva Spark MD 🌟
 
 <p align="center">
-  <img src="https://files.catbox.moe/i7xkrj.jpg" alt="Silva Spark MD Logo" width="600"/>
+  <img src="https://i.ibb.co/BVt9McxS/photo-2025-06-15-12-14-29-7516148628621099032.jpg" alt="Silva Spark MD Logo" width="600"/>
 </p>
 
 <p align="center">
