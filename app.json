@@ -15,7 +15,7 @@
     "ALIVE_IMG": {
       "description": "paste your image url if you don't have you can use this public url.",
       "required": false,
-      "value": "https://i.imgur.com/PEZ5QL2.jpeg"
+      "value": "https://i.ibb.co/BVt9McxS/photo-2025-06-15-12-14-29-7516148628621099032.jpg"
     }, 
     
     "LIVE_MSG": {
@@ -151,7 +151,7 @@
     "AUTO_TYPING": {
       "description": "Make it true if you want auto typing.",
       "required": false,
-      "value": "false"
+      "value": "true"
     },
 
     "AUTO_REACT": {
@@ -163,14 +163,14 @@
     "OWNER_REACT": {
       "description": "Make it true if you only want react on Owner Massages.",
       "required": false,
-      "value": "true"
+      "value": "false"
       
     }, 
     
     "CUSTOM_REACT": {
       "description": "Make it true if you want custom reactions.",
       "required": false,
-      "value": "true"
+      "value": "false"
       
     }, 
     
