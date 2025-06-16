@@ -3,64 +3,61 @@ const { cmd } = require('../command');
 const fs = require('fs');
 const os = require('os');
 
-// Read package version
+// Fetch bot version from package.json
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const version = pkg.version || "1.0.0";
 
-// Uptime formatter
+// Format uptime nicely
 function formatUptime(ms) {
-    let sec = Math.floor((ms / 1000) % 60);
-    let min = Math.floor((ms / (1000 * 60)) % 60);
-    let hr = Math.floor((ms / (1000 * 60 * 60)) % 24);
+    const sec = Math.floor((ms / 1000) % 60);
+    const min = Math.floor((ms / (1000 * 60)) % 60);
+    const hr = Math.floor((ms / (1000 * 60 * 60)) % 24);
     return `${hr}h ${min}m ${sec}s`;
 }
 
-// Count commands (plugin files)
+// Count total loaded commands
 const commandCount = Object.keys(require.cache)
-    .filter(path => path.includes('/commands/') || path.includes('\\commands\\'))
+    .filter(p => p.includes('/commands/') || p.includes('\\commands\\'))
     .length;
 
+// Define the command
 cmd({
     pattern: "repo",
     alias: ["sc", "script", "info"],
-    desc: "Show Silva Spark MD repository details",
+    desc: "📦 Show full repo & runtime stats",
     category: "main",
-    react: "👨‍💻",
+    react: "🧑‍💻",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, reply }) => {
     try {
-        // GitHub repo stats
-        const { data } = await axios.get('https://api.github.com/repos/SilvaTechB/silva-md-bot');
+        const repoUrl = 'https://api.github.com/repos/SilvaTechB/silva-md-bot';
+        const { data } = await axios.get(repoUrl);
         const { stargazers_count, forks_count } = data;
-        const users = Math.round((stargazers_count + forks_count) * 5); // ×5 stats
+        const estUsers = (stargazers_count + forks_count) * 5;
 
         const uptime = formatUptime(process.uptime() * 1000);
         const platform = os.platform().toUpperCase();
         const arch = os.arch().toUpperCase();
 
         const msg = `
-┏━━━『 *👨‍💻 Silva Spark MD Info* 』━━━✦
-┃ 🔗 *Repo*: 
-┃   github.com/SilvaTechB/silva-spark-md
-┃ 
-┃ ⭐ *Stars*: ${stargazers_count}
-┃ 🍴 *Forks*: ${forks_count}
-┃ 👥 *Est. Users*: ${users}
-┃ 
-┃ ⚙️ *Version*: v${version}
-┃ 📊 *Commands*: ${commandCount}
-┃ 🕓 *Uptime*: ${uptime}
-┃ 💽 *System*: ${platform} (${arch})
-┗━━━━━━━━━━━━━━━━━━━━━━✦
+┏━━━━━━━━━━━━━━━✦
+┃ 🧠 *Silva Spark MD*
+┃─────────────────
+┃ 📎 *Repo:* github.com/SilvaTechB/silva-spark-md
+┃ ⭐ Stars: ${stargazers_count}
+┃ 🍴 Forks: ${forks_count}
+┃ 👥 Users (Est): ${estUsers}
+┃─────────────────
+┃ 🛠 Version: v${version}
+┃ 🧾 Commands: ${commandCount}
+┃ 🕓 Uptime: ${uptime}
+┃ 💻 System: ${platform} (${arch})
+┗━━━━━━━━━━━━━━━✦
 
-✨ *Silva Spark MD* – your feature-packed WhatsApp bot for automation, fun, and more!
-
-📌 *Main MD Repo*:
-https://github.com/SilvaTechB/silva-md-bot
-
-💡 *Tip*: Fork & ⭐ to show love!
-💖 Thanks for choosing Silva Spark MD!
+💖 *Thanks for using Silva Spark MD!*
+📌 Fork ⭐ the project & join the journey!
+🔗 Repo: https://github.com/SilvaTechB/silva-md-bot
         `.trim();
 
         const contextTag = {
@@ -74,20 +71,20 @@ https://github.com/SilvaTechB/silva-md-bot
             }
         };
 
-        // Send the repo stats text with forward tag
+        // Text message
         await conn.sendMessage(from, {
             text: msg,
             contextInfo: contextTag
         }, { quoted: mek });
 
-        // Send a related image with forward tag
+        // Promo image
         await conn.sendMessage(from, {
-            image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
-            caption: "🌟 *Silva Spark MD: Powering smart chats everywhere!*",
+            image: { url: 'https://files.catbox.moe/0vldgh.jpeg' },
+            caption: "✨ *Silva Spark MD: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/SilvaTechB/silva-spark-md\n⭐ Stars: ${stargazers_count}\n🍴 Forks: ${forks_count}\n👥 Users (Est): ${estUsers}",
             contextInfo: contextTag
         }, { quoted: mek });
 
-        // Send the audio response (voice note)
+        // Voice note response
         await conn.sendMessage(from, {
             audio: { url: 'https://files.catbox.moe/hpwsi2.mp3' },
             mimetype: 'audio/mp4',
@@ -95,7 +92,7 @@ https://github.com/SilvaTechB/silva-md-bot
         }, { quoted: mek });
 
     } catch (err) {
-        console.error("❌ Repo Fetch Error:", err);
-        reply(`🚫 *Error fetching repo data:*\n${err.message}`);
+        console.error("❌ Error:", err);
+        reply(`🚫 *Oops!* Couldn't fetch repo info.\n\n🔧 ${err.message}`);
     }
 });
