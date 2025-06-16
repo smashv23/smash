@@ -80,7 +80,7 @@ async (conn, mek, m, { from, quoted, reply }) => {
         // Promo image
         await conn.sendMessage(from, {
             image: { url: 'https://files.catbox.moe/0vldgh.jpeg' },
-            caption: "✨ *Silva Spark MD: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/SilvaTechB/silva-spark-md\n⭐ Stars: ${stargazers_count}\n🍴 Forks: ${forks_count}\n👥 Users (Est): ${estUsers}",
+            caption: "✨ *Silva Spark MD: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/SilvaTechB/silva-spark-md\n⭐ Stars\n🍴 Forks\n👥 Users (Est): 17000",
             contextInfo: contextTag
         }, { quoted: mek });
 
