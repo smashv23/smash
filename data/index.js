@@ -2,7 +2,7 @@ const { AntiDelDB,
     initializeAntiDeleteSettings,
     setAnti,
     getAnti,
-    getAllAntiDeleteSettings, } = require('./sparkdel');
+    getAllAntiDeleteSettings, } = require('./antidel');
 const {
     saveContact,
     loadMessage,
