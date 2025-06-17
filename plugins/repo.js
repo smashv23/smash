@@ -36,7 +36,7 @@ async (conn, mek, m, { from, reply }) => {
         const arch = os.arch().toUpperCase();
 
         // Optional: Count command files directly
-        const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')).length;
+        const commandFiles = fs.readdirSync('./plugins').filter(file => file.endsWith('.js')).length;
 
         const msg = `
 ╭━━〔 *⎈ Silva Spark MD Runtime Info* 〕━━⊷
