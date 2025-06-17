@@ -3,11 +3,11 @@ const { cmd } = require('../command');
 const fs = require('fs');
 const os = require('os');
 
-// Fetch bot version from package.json
+// Load version from package.json
 const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const version = pkg.version || "1.0.0";
 
-// Format uptime nicely
+// Format uptime
 function formatUptime(ms) {
     const sec = Math.floor((ms / 1000) % 60);
     const min = Math.floor((ms / (1000 * 60)) % 60);
@@ -15,12 +15,6 @@ function formatUptime(ms) {
     return `${hr}h ${min}m ${sec}s`;
 }
 
-// Count total loaded commands
-const commandCount = Object.keys(require.cache)
-    .filter(p => p.includes('/commands/') || p.includes('\\commands\\'))
-    .length;
-
-// Define the command
 cmd({
     pattern: "repo",
     alias: ["sc", "script", "info"],
@@ -28,11 +22,12 @@ cmd({
     category: "main",
     react: "🧑‍💻",
     filename: __filename
-},
-async (conn, mek, m, { from, quoted, reply }) => {
+}, 
+async (conn, mek, m, { from, reply }) => {
     try {
         const repoUrl = 'https://api.github.com/repos/SilvaTechB/silva-md-bot';
-        const { data } = await axios.get(repoUrl);
+        const { data } = await axios.get(repoUrl, { timeout: 8000 }); // timeout added
+
         const { stargazers_count, forks_count } = data;
         const estUsers = (stargazers_count + forks_count) * 5;
 
@@ -40,30 +35,28 @@ async (conn, mek, m, { from, quoted, reply }) => {
         const platform = os.platform().toUpperCase();
         const arch = os.arch().toUpperCase();
 
+        // Optional: Count command files directly
+        const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js')).length;
+
         const msg = `
-┏━━━━━━━━━━━━━━━✦
-┃ 🧠 *Silva Spark MD*
-┃─────────────────
-┃ 📎 *Repo:* github.com/SilvaTechB/silva-spark-md
+╭━━〔 *⎈ Silva Spark MD Runtime Info* 〕━━⊷
+┃
+┃ 🧠 *Project:* Silva Spark MD
+┃ 🔗 *Repo:* https://github.com/SilvaTechB/silva-md-bot
 ┃ ⭐ Stars: ${stargazers_count}
 ┃ 🍴 Forks: ${forks_count}
-┃ 👥 Users (Est): ${estUsers}
-┃─────────────────
+┃ 👥 Estimated Users: ${estUsers}
 ┃ 🛠 Version: v${version}
-┃ 🧾 Commands: ${commandCount}
-┃ 🕓 Uptime: ${uptime}
+┃ 💡 Commands Loaded: ${commandFiles}
+┃ 🕒 Uptime: ${uptime}
 ┃ 💻 System: ${platform} (${arch})
-┗━━━━━━━━━━━━━━━✦
+┃
+╰━━━⊷ *© SilvaTech Inc 2025*`.trim();
 
-💖 *Thanks for using Silva Spark MD!*
-📌 Fork ⭐ the project & join the journey!
-🔗 Repo: https://github.com/SilvaTechB/silva-md-bot
-        `.trim();
-
-        const contextTag = {
-            mentionedJid: [m.sender],
+        const contextInfo = {
             forwardingScore: 999,
             isForwarded: true,
+            mentionedJid: [m.sender],
             forwardedNewsletterMessageInfo: {
                 newsletterJid: '120363200367779016@newsletter',
                 newsletterName: 'SILVA SPARK MD 💖🦄',
@@ -71,20 +64,17 @@ async (conn, mek, m, { from, quoted, reply }) => {
             }
         };
 
-        // Text message
-        await conn.sendMessage(from, {
-            text: msg,
-            contextInfo: contextTag
-        }, { quoted: mek });
+        // Send main stats
+        await conn.sendMessage(from, { text: msg, contextInfo }, { quoted: mek });
 
-        // Promo image
+        // Send fancy image
         await conn.sendMessage(from, {
             image: { url: 'https://files.catbox.moe/0vldgh.jpeg' },
-            caption: "✨ *Silva Spark MD: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/SilvaTechB/silva-spark-md\n⭐ Stars\n🍴 Forks\n👥 Users (Est): 17000",
-            contextInfo: contextTag
+            caption: `✨ *Silva Spark MD: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/SilvaTechB/silva-md-bot\n⭐ Stars: ${stargazers_count}\n🍴 Forks: ${forks_count}\n👥 Users: ${estUsers}`,
+            contextInfo
         }, { quoted: mek });
 
-        // Voice note response
+        // Send promo audio
         await conn.sendMessage(from, {
             audio: { url: 'https://files.catbox.moe/hpwsi2.mp3' },
             mimetype: 'audio/mp4',
@@ -92,7 +82,7 @@ async (conn, mek, m, { from, quoted, reply }) => {
         }, { quoted: mek });
 
     } catch (err) {
-        console.error("❌ Error:", err);
-        reply(`🚫 *Oops!* Couldn't fetch repo info.\n\n🔧 ${err.message}`);
+        console.error("❌ Repo Error:", err.message);
+        reply(`🚫 *Oops!* Couldn’t fetch repo info.\n💬 ${err.message || "Network/Timeout Error"}`);
     }
 });
