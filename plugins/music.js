@@ -4,8 +4,8 @@ const { cmd } = require("../command");
 
 cmd({
   pattern: "audio3",
-  alias: ["spotify", "ytmusic", "play"],
-  react: "🎵",
+  alias: ["spotify", "ytmusic", "play", "song"],
+  react: "🫟",
   desc: "Download and send MP3 audio from YouTube or Spotify",
   category: "media",
   filename: __filename
