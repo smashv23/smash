@@ -6,69 +6,90 @@ cmd({
   pattern: "audio3",
   alias: ["spotify", "ytmusic", "play"],
   react: "🎵",
-  desc: "Fetch audio from Spotify or YouTube",
+  desc: "Download and send MP3 audio from YouTube or Spotify",
   category: "media",
   filename: __filename
 }, async (client, message, details, context) => {
   const { from, q, reply } = context;
 
-  if (!q) return reply("❌ What song do you want to download?");
-  reply("🔄 *Silva Spark Bot fetching your audio...*\n\n*Please wait...* 🎧");
+  if (!q) return reply("❌ *Which song should I fetch?* Please provide a song name or keywords.");
+
+  reply("🎶 *Sɪʟᴠᴀ Sᴘᴀʀᴋ ɪs ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ʀᴇǫᴜᴇsᴛ...*\n🔍 Searching for your track...");
 
   try {
-    let search = await ytSearch(q);
-    let video = search.videos[0];
-    if (!video) return reply("❌ No results found. Please refine your search.");
+    const search = await ytSearch(q);
+    const video = search.videos?.[0];
+    if (!video) return reply("❌ *No matching songs found.* Try another title.");
 
-    let link = video.url;
-    let apis = [
+    const link = video.url;
+    const apis = [
       `https://apis.davidcyriltech.my.id/youtube/mp3?url=${link}`,
       `https://api.ryzendesu.vip/api/downloader/ytmp3?url=${link}`
     ];
 
+    let audioUrl, songTitle, artistName, thumbnail;
+
     for (const api of apis) {
       try {
-        let { data } = await axios.get(api);
+        const { data } = await axios.get(api);
         if (data.status === 200 || data.success) {
-          let audioUrl = data.result?.downloadUrl || data.url;
-          let songData = {
-            title: data.result?.title || video.title,
-            artist: data.result?.author || video.author.name,
-            thumbnail: data.result?.image || video.thumbnail,
-            videoUrl: link
-          };
-
-          await client.sendMessage(from, {
-            image: { url: songData.thumbnail },
-            caption: `SYLIVANUS THE SILVA SPARK BOT\n╭═════════════════⊷\n║ 🎶 *Title:* ${songData.title}\n║ 🎤 *Artist:* ${songData.artist}\n║ 🔗 *No URL Sharing*\n╰═════════════════⊷\n*Powered by SILVA SPARK BOT*`
-          });
-
-          reply("📤 *Sending your audio...* 🎼");
-
-          await client.sendMessage(from, {
-            audio: { url: audioUrl },
-            mimetype: "audio/mp4"
-          });
-
-          reply("📤 *Sending your MP3 file...* 🎶");
-
-          await client.sendMessage(from, {
-            document: { url: audioUrl },
-            mimetype: "audio/mp3",
-            fileName: `${songData.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`
-          });
-
-          reply("✅ *Silva Spark – World-class bot just successfully sent you what you requested! 🎶*");
-          return;
+          audioUrl = data.result?.downloadUrl || data.url;
+          songTitle = data.result?.title || video.title;
+          artistName = data.result?.author || video.author.name;
+          thumbnail = data.result?.image || video.thumbnail;
+          break;
         }
       } catch (e) {
-        console.error(`API Error (${api}):`, e.message);
+        console.warn(`⚠️ Failed API: ${api}\n${e.message}`);
         continue;
       }
     }
 
-    reply("⚠️ An error occurred. All APIs might be down or unable to process the request.");
+    if (!audioUrl) return reply("⚠️ *All available servers failed to fetch your song.* Please try again later.");
+
+    // Send song preview card
+    await client.sendMessage(from, {
+      image: { url: thumbnail },
+      caption: `
+🎧 *Now Playing:*
+╭─────⊷
+│ 🎶 *Title:* ${songTitle}
+│ 🎤 *Artist:* ${artistName}
+│ 🔗 *Source:* YouTube
+╰─────⊷
+🪄 _Delivered by Silva Spark Bot_ ✨
+      `.trim(),
+      contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: '120363200367779016@newsletter',
+          newsletterName: 'Silva Spark Audio Player 🎧',
+          serverMessageId: 144
+        }
+      }
+    });
+
+    reply("📤 *Uploading high-quality MP3...*");
+
+    // Send audio stream
+    await client.sendMessage(from, {
+      audio: { url: audioUrl },
+      mimetype: "audio/mp4",
+      ptt: false
+    });
+
+    // Send downloadable MP3 as a file
+    await client.sendMessage(from, {
+      document: { url: audioUrl },
+      mimetype: "audio/mp3",
+      fileName: `${songTitle.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`
+    });
+
+    reply("✅ *Silva Spark just sent your requested song!* 🎶 Enjoy the vibes!");
+
   } catch (error) {
-    reply("❌ Download failed\n" + error.message);
+    console.error("❌ Audio Fetch Error:", error.message);
+    reply(`🚫 *Oops!* Something went wrong.\n\n🛠 ${error.message}`);
   }
 });
