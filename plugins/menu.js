@@ -3,6 +3,7 @@ const { cmd, commands } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
 const axios = require('axios');
+const pkg = require('../package.json'); // Get version from package.json
 
 // Visual Elements
 const rainbow = ['💥', '💥'];
@@ -59,7 +60,7 @@ cmd({
 
 ${rainbow.join('')} BOT INFORMATION ${rainbow.reverse().join('')}
 👑 Owner » ${config.OWNER_NAME}
-📱 Version » 1.0.0
+📱 Version » ${pkg.version}
 ⚙️ Mode » ${config.MODE.toUpperCase()}
 🔣 Prefix » [${config.PREFIX}]
 ⏳ Runtime » ${runtime(process.uptime())}
