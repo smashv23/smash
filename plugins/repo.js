@@ -42,7 +42,7 @@ async (conn, mek, m, { from, reply }) => {
 ╭━━〔 *⎈ Silva Spark MD Runtime Info* 〕━━⊷
 ┃
 ┃ 🧠 *Project:* Silva Spark MD
-┃ 🔗 *Repo:* https://github.com/SilvaTechB/silva-md-bot
+┃ 🔗 *Repo:* https://github.com/SilvaTechB/silva-spark-md
 ┃ ⭐ Stars: ${stargazers_count}
 ┃ 🍴 Forks: ${forks_count}
 ┃ 👥 Estimated Users: ${estUsers}
