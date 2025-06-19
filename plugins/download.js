@@ -17,8 +17,8 @@ const {
   commands
 } = require('../command');
 cmd({
-  'pattern': "tiktok",
-  'alias': ['tt'],
+  'pattern': "tiktok3",
+  'alias': ['tt3'],
   'react': '🎥',
   'desc': "download tt videos",
   'category': "download",
