@@ -23,7 +23,7 @@ const {
   
   const l = console.log
   const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
-const startAutoBio = require(`./lib/autobio`)
+const startAutoBio = require('./lib/autobio')
   const fs = require('fs')
   const ff = require('fluent-ffmpeg')
   const P = require('pino')
