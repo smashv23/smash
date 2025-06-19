@@ -4,60 +4,59 @@ const os = require("os");
 const path = require("path");
 const { cmd } = require("../command");
 
-// Initialize Catbox uploader
 const catbox = new Catbox();
 
 cmd({
   pattern: "catbox",
   alias: ["uploadcat", "caturl", "catlink"],
   react: "📤",
-  desc: "Upload quoted media (image/video/sticker/audio) to Catbox and return a sharable link.",
+  desc: "Upload quoted media to Catbox and return a shareable link.",
   category: "utility",
   filename: __filename
-}, async (client, message, args, context) => {
+}, async (client, m, args, context) => {
   const { from, quoted, reply, sender } = context;
 
   try {
-    const target = message.quoted ? message.quoted : message;
-    const mime = (target.msg || target).mimetype || '';
+    if (!quoted) return reply("❌ Please quote an image, video, audio, or sticker to upload.");
 
+    const mime = (quoted.msg || quoted).mimetype || '';
     if (!mime || !/(image|video|audio)/.test(mime)) {
-      return reply("🌻 Please reply to an image, video, audio, or sticker.");
+      return reply("❌ Unsupported media. Quote an image, video, or audio.");
     }
 
-    // Download media and save temporarily
-    const mediaBuffer = await target.download();
-    const tempPath = path.join(os.tmpdir(), `catbox_${Date.now()}`);
+    // Download media
+    const mediaBuffer = await quoted.download();
+    if (!mediaBuffer) return reply("❌ Failed to download media.");
+
+    const tempPath = path.join(os.tmpdir(), `silva-catbox-${Date.now()}`);
     await fs.writeFile(tempPath, mediaBuffer);
 
     // Upload to Catbox
-    const resultUrl = await catbox.uploadFile({ path: tempPath });
+    const uploadedUrl = await catbox.uploadFile({ path: tempPath });
+    await fs.unlink(tempPath); // clean up
 
-    if (!resultUrl) {
-      throw "❌ Failed to upload to Catbox.";
+    if (!uploadedUrl || typeof uploadedUrl !== "string") {
+      throw new Error("Upload returned an invalid response.");
     }
-
-    // Clean up temp file
-    await fs.unlink(tempPath);
 
     const contextInfo = {
       mentionedJid: [sender],
       forwardingScore: 999,
       isForwarded: true,
       forwardedNewsletterMessageInfo: {
-        newsletterJid: '120363200367779016@newsletter',
+        newsletterJid: "120363200367779016@newsletter",
         newsletterName: "SILVA SPARK 🥰",
         serverMessageId: 0x94
       }
     };
 
     await client.sendMessage(from, {
-      text: `✅ *Media Uploaded to Catbox!*\n\n📁 Size: ${(mediaBuffer.length / 1024).toFixed(2)} KB\n🔗 URL: ${resultUrl}`,
+      text: `✅ *Uploaded to Catbox!*\n\n🔗 URL: ${uploadedUrl}`,
       contextInfo
     });
 
   } catch (err) {
     console.error("Catbox Upload Error:", err);
-    reply("❌ Failed to upload. Reason: " + (err.message || err));
+    return reply("❌ Failed to upload.\n\nReason: " + (err.message || err));
   }
 });
