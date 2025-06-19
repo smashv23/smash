@@ -40,7 +40,7 @@ cmd({
     _0x1bf672.append("image", fs.createReadStream(_0x18c2b8));
 
     // Send image to imgbb
-    const _0x338f64 = await axios.post("https://api.imgbb.com/1/upload?key=06d00f0e4520243a32b58138765a2ecc", _0x1bf672, {
+    const _0x338f64 = await axios.post("https://api.imgbb.com/1/upload?key=b9dc9d120cc17e0d9bef7071126818e9", _0x1bf672, {
       'headers': {
         ..._0x1bf672.getHeaders()
       }
