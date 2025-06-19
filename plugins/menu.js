@@ -21,7 +21,7 @@ async function sendMenu(conn, from, mek, sender, text, title, sendAudio = false)
       contextInfo: {
         mentionedJid: [sender],
         forwardingScore: 999,
-        isForwarded: true,
+        isForwarded: false,
         forwardedNewsletterMessageInfo: {
           newsletterJid: '120363200367779016@newsletter',
           newsletterName: 'SILVA SPARK MD 💖🦄',
