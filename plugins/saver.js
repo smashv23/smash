@@ -1,51 +1,58 @@
-const { cmd, commands } = require("../command");
-const path = require('path');
+const { cmd } = require("../command");
 
 cmd({
-  pattern: "save",
-  react: '📁',
-  alias: ["store"],
-  desc: "Save and send back a media file (image, video, or audio).",
-  category: "media",
-  use: ".save <caption>",
+  pattern: "send",
+  alias: ["sendme", 'save'],
+  react: '📤',
+  desc: "Forwards quoted message back to user",
+  category: "utility",
   filename: __filename
-}, async (client, message, args, { quoted, q, reply }) => {
+}, async (client, message, match, { from }) => {
   try {
-    if (!quoted) {
-      return reply("❌ Reply to a media message (video, image, or audio) with the `.save` command.");
+    if (!match.quoted) {
+      return await client.sendMessage(from, {
+        text: "*🍁 Please reply to a message!*"
+      }, { quoted: message });
     }
 
-    const mediaType = quoted.mtype;
-    let type;
-    if (/video/.test(mediaType)) {
-      type = "video";
-    } else if (/image/.test(mediaType)) {
-      type = "image";
-    } else if (/audio/.test(mediaType)) {
-      type = "audio";
-    } else {
-      return reply("❌ Only video, image, or audio messages are supported.");
+    const buffer = await match.quoted.download();
+    const mtype = match.quoted.mtype;
+    const options = { quoted: message };
+
+    let messageContent = {};
+    switch (mtype) {
+      case "imageMessage":
+        messageContent = {
+          image: buffer,
+          caption: match.quoted.text || '',
+          mimetype: match.quoted.mimetype || "image/jpeg"
+        };
+        break;
+      case "videoMessage":
+        messageContent = {
+          video: buffer,
+          caption: match.quoted.text || '',
+          mimetype: match.quoted.mimetype || "video/mp4"
+        };
+        break;
+      case "audioMessage":
+        messageContent = {
+          audio: buffer,
+          mimetype: "audio/mp4",
+          ptt: match.quoted.ptt || false
+        };
+        break;
+      default:
+        return await client.sendMessage(from, {
+          text: "❌ Only image, video, and audio messages are supported"
+        }, { quoted: message });
     }
 
-    // Download and save the media file
-    const filePath = await client.downloadAndSaveMediaMessage(quoted);
-    if (!filePath) {
-      return reply("❌ Failed to download the media.");
-    }
-    const resolvedPath = path.resolve(filePath);
-
-    // Prepare message object
-    const messageObj = {
-      caption: q || ''
-    };
-    messageObj[type] = { url: 'file://' + resolvedPath };
-
-    // Send the media back
-    await client.sendMessage(message.sender, messageObj, { quoted: message });
-
-    return reply("✅ S♥I♥L♥V♥A♥ ♥S♥P♥A♥R♥K Successfully saved and sent the media file.");
+    await client.sendMessage(from, messageContent, options);
   } catch (error) {
-    console.error(error);
-    return reply("❌ Failed to save and send the media. Please try again.");
+    console.error("Forward Error:", error);
+    await client.sendMessage(from, {
+      text: "❌ Error forwarding message:\n" + error.message
+    }, { quoted: message });
   }
 });
