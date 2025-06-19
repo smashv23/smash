@@ -11,12 +11,13 @@ const emojis = ['✨', '⚡', '🌟', '💫', '🎀', '🧿', '💠', '🔮', '�
 const randomEmoji = () => emojis.sort(() => 0.5 - Math.random()).slice(0, 3).join('');
 const divider = (length = 20, char = '─') => char.repeat(length);
 
-// Helper function for sending messages
+// 🔁 Animated Video + Audio Sender
 async function sendMenu(conn, from, mek, sender, text, title, sendAudio = false) {
   try {
     await conn.sendMessage(from, {
-      image: { url: `https://files.catbox.moe/0vldgh.jpeg` },
+      video: { url: 'https://files.catbox.moe/2xxr9h.mp4' },
       caption: text,
+      gifPlayback: true,
       contextInfo: {
         mentionedJid: [sender],
         forwardingScore: 999,
