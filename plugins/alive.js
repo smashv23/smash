@@ -8,7 +8,7 @@ cmd({
   alias: ["status", "runtime", "uptime"],
   desc: "Check uptime and system status",
   category: "main",
-  react: "💡",
+  react: "💋",
   filename: __filename
 }, async (conn, mek, m, {
   from, sender, reply
@@ -19,22 +19,22 @@ cmd({
     const up = runtime(process.uptime());
 
     const caption = `
-╭━━〔 ✦ 𝑺𝑰𝑳𝑽𝑨 𝑺𝑷𝑨𝑹𝑲 𝑴𝑫 ✦ 〕━━╮
+╭━━〔 *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥 〕━━╮
 ┃ ⚙️ *Bot Status Report* ⚙️
 ┃
 ┃ 🧬 *Version:* ${pkg.version}
 ┃ ⏱ *Uptime:* ${up}
-┃ 🧠 *Memory:* ${usedMemMB} MB / ${totalMemGB} GB
+┃ 🧠 *Memory:* ${usedMemMB} TB / ${totalMemGB} TB
 ┃ 🖥 *Host:* ${os.hostname()}
-┃ 👑 *Owner:* ${global?.config?.OWNER_NAME || "SPARK"}
-┃ 💖 *Framework:* Silva Spark MD
+┃ 👑 *Owner:* ${global?.config?.OWNER_NAME || "loft"}
+┃ 💖 *Framework:* *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥
 ┃
 ╰━━━━━━━━━━━━━━━━━━━━╯
 🔗 Stay Powered • Stay Sparked
 `;
 
     await conn.sendMessage(from, {
-      video: { url: 'https://files.catbox.moe/2xxr9h.mp4' },
+      image: { url:'https://files.catbox.moe/osou52.jpg' },
       caption,
       gifPlayback: true,
       contextInfo: {
@@ -42,8 +42,8 @@ cmd({
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363200367779016@newsletter',
-          newsletterName: 'SILVA SPARK 💖',
+          newsletterJid: '120363398106360290@newsletter',
+          newsletterName: '*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥',
           serverMessageId: 143
         }
       }
