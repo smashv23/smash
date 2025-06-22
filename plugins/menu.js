@@ -7,7 +7,7 @@ const pkg = require('../package.json'); // Get version from package.json
 
 // Visual Elements
 const rainbow = ['💥', '💥'];
-const emojis = ['✨', '⚡', '🌟', '💫', '🎀', '🧿', '💠', '🔮', '🌈'];
+const emojis = ['✨', '⚡', '🌟', '💫', '🎀', '🧿', '💠', '🔮', '💋'];
 
 const randomEmoji = () => emojis.sort(() => 0.5 - Math.random()).slice(0, 3).join('');
 const divider = (length = 20, char = '─') => char.repeat(length);
@@ -16,7 +16,7 @@ const divider = (length = 20, char = '─') => char.repeat(length);
 async function sendMenu(conn, from, mek, sender, text, title, sendAudio = false) {
   try {
     await conn.sendMessage(from, {
-      video: { url: 'https://files.catbox.moe/2xxr9h.mp4' },
+      video: { url:'https://files.catbox.moe/0wizqy.jpg' },
       caption: text,
       gifPlayback: true,
       contextInfo: {
@@ -24,8 +24,8 @@ async function sendMenu(conn, from, mek, sender, text, title, sendAudio = false)
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363200367779016@newsletter',
-          newsletterName: 'SILVA SPARK MD 💖🦄',
+          newsletterJid: '120363398106360290@newsletter',
+          newsletterName: '*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥',
           serverMessageId: 143
         }
       }
@@ -55,7 +55,7 @@ cmd({
   try {
     const menuText = `
 ╭━━━━━━━━━━━━━━━━━━━━╮
-  ✨ SILVA SPARK MD ✨
+  *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥
 ╰━━━━━━━━━━━━━━━━━━━━╯
 
 ${rainbow.join('')} BOT INFORMATION ${rainbow.reverse().join('')}
