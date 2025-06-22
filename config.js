@@ -9,7 +9,7 @@ SESSION_ID: process.env.SESSION_ID || "",
 // add your Session Id 
 PREFIX: process.env.PREFIX || ".",
 // add your prifix for bot
-BOT_NAME: process.env.BOT_NAME || "✦ Silva ✦ Spark ✦ MD ✦",
+BOT_NAME: process.env.BOT_NAME || "*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥",
 // add bot namw here for menu
 AUTO_STATUS_REACT: process.env.AUTO_STATUS_REACT || "true",
 // true to get auto status react
@@ -23,7 +23,7 @@ OWNER_NUMBER: process.env.OWNER_NUMBER || "255778018545",
 // add your bot owner number
 OWNER_NAME: process.env.OWNER_NAME || "*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥",
 // add bot owner name
-DESCRIPTION: process.env.DESCRIPTION || "*© ✦ Silva ✦ Spark ✦ MD ✦*",
+DESCRIPTION: process.env.DESCRIPTION || "*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥",
 // add bot owner name    
 ALIVE_IMG: process.env.ALIVE_IMG || "https://files.catbox.moe/0wizqy.jpg",
 // add img for alive msg
@@ -39,7 +39,7 @@ AUTO_STATUS_SEEN: process.env.AUTO_STATUS_SEEN || "true",
 // make true or false status auto seen
 AUTO_STATUS_REPLY: process.env.AUTO_STATUS_REPLY || "true",
 // make true if you want auto reply on status 
-AUTO_STATUS__MSG: process.env.AUTO_STATUS__MSG || "*🎉👀 Seen by Silva Spark MD 🚀🔥*",
+AUTO_STATUS__MSG: process.env.AUTO_STATUS__MSG || "*🎉👀 Seen by *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥 🚀🔥*",
 // set the auto reply massage on status reply    
 MODE: process.env.MODE || "public",
 // make bot public-private-inbox-group 
