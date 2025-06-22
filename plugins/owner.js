@@ -3,7 +3,7 @@ const config = require('../config');
 
 cmd({
   pattern: "owner",
-  react: "🦋",
+  react: "💋",
   desc: "Sends contact info of the bot owner.",
   category: "main",
   filename: __filename
@@ -32,12 +32,12 @@ END:VCARD`;
     await conn.sendMessage(from, {
       image: { url: 'https://files.catbox.moe/0vldgh.jpeg' },
       caption: 
-`╭━━〔 *⎈ Sɪʟᴠᴀ Ｓᴘᴀʀᴋ мᎠ ⎈* 〕━━┈⊷
+`╭━━〔 *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥 〕━━┈⊷
 ┃◈╭─────────────·๏
 ┃◈┃• *Owner Name:* ${ownerName}
 ┃◈┃• *Phone:* ${ownerNumber}
 ┃◈┃• *Bot Version:* 2.0.1
-┃◈┃• *Team:* Silva Developers 💖
+┃◈┃• *Team:* loft Developers 💖
 ┃◈└───────────┈⊷
 ╰──────────────┈⊷
 📣 _Reach out for support, updates, or collabs!_
@@ -48,8 +48,8 @@ END:VCARD`;
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363200367779016@newsletter',
-          newsletterName: 'SILVA DEVELOPERS🥰💖🥰',
+          newsletterJid: '120363398106360290@newsletter',
+          newsletterName: 'loft DEVELOPERS🥰💖🥰',
           serverMessageId: 143
         }
       }
