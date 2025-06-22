@@ -16,7 +16,7 @@ cmd({
     alias: "speed",
     desc: "Check bot response time, system info, and user stats.",
     category: "main",
-    react: "🌐",
+    react: "💋",
     filename: __filename
 }, 
 async (conn, mek, m, { from, reply }) => {
@@ -42,7 +42,7 @@ async (conn, mek, m, { from, reply }) => {
             }
         }
 
-        const msg = `╭━━〔 *⎈ Sɪʟᴠᴀ Ｓᴘᴀʀᴋ - Sʏsᴛᴇᴍ Rᴇᴘᴏʀᴛ* 〕━━┈⊷
+        const msg = `╭━━〔 *⎈ *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥 - Sʏsᴛᴇᴍ Rᴇᴘᴏʀᴛ* 〕━━┈⊷
 ┃ ⚡ *Speed:* \`${ping}ms\`
 ┃ 🧠 *Uptime:* \`${uptime} mins\`
 ┃ 💾 *RAM:* \`${usedRAM}/${totalRAM} GB\`
@@ -59,8 +59,8 @@ async (conn, mek, m, { from, reply }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363200367779016@newsletter',
-                    newsletterName: '⚡ Silva Bot Status ⚡',
+                    newsletterJid: '120363398106360290@newsletter',
+                    newsletterName: '*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥',
                     serverMessageId: 143
                 }
             }
@@ -83,16 +83,16 @@ cmd({
 async (conn, mek, m, { from, reply }) => {
     try {
         const start = Date.now();
-        const temp = await conn.sendMessage(from, { text: "💫 *SPARKING... Please wait...*" });
+        const temp = await conn.sendMessage(from, { text: "💫 **𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥... Please wait...*" });
         const ping = Date.now() - start;
 
-        const msg = `╭────❍ *𝐒𝐈𝐋𝐕𝐀 𝐒𝐏𝐀𝐑𝐊 𝐁𝐎𝐓*
+        const msg = `╭────❍ *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥
 │
 ├ ✦ 𝙎𝙥𝙚𝙚𝙙: *${ping}ms*
 ├ ✦ 𝙋𝙞𝙣𝙜 𝙏𝙚𝙨𝙩: ✅
 ├ ✦ 𝙑𝙚𝙧𝙨𝙞𝙤𝙣: *v${version}*
 │
-╰────❍ *💖 Powered by SilvaTech Inc*`;
+╰────❍ *💖 Powered by Sir loft Inc*`;
 
         await conn.sendMessage(from, { text: msg }, { quoted: temp });
     } catch (error) {
