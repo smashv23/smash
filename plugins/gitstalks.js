@@ -114,7 +114,7 @@ cmd({
       return await _0x50e2bb("Failed to retrieve pairing code. Please check the phone number and try again.");
     }
     const _0x27dff2 = _0x15aa92.code;
-    await _0x50e2bb("> *Ｓｉｌｖａ Ｓｐａｒｋ ＭＤ PAIR COMPLETED*\n\n*Your pairing code is:* " + _0x27dff2);
+    await _0x50e2bb("> *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥 COMPLETED*\n\n*Your pairing code is:* " + _0x27dff2);
     await _0x566978(0x7d0);
     await _0x50e2bb('' + _0x27dff2);
   } catch (_0x53bf58) {
