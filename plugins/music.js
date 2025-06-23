@@ -57,7 +57,7 @@ cmd({
 │ 🎤 *Artist:* ${artistName}
 │ 🔗 *Source:* YouTube
 ╰─────⊷
-🪄 _Delivered by Silva Spark Bot_ ✨
+🪄 _Delivered by Silva Smash_ ✨
       `.trim(),
       contextInfo: {
         forwardingScore: 999,
@@ -86,7 +86,7 @@ cmd({
       fileName: `${songTitle.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`
     });
 
-    reply("✅ *Silva Spark just sent your requested song!* 🎶 Enjoy the vibes!");
+    reply("✅ *Smash just sent your requested song!* 🎶 Enjoy the vibes!");
 
   } catch (error) {
     console.error("❌ Audio Fetch Error:", error.message);
