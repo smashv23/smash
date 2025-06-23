@@ -19,7 +19,7 @@ cmd({
 async (conn, mek, m, { from, quoted, reply }) => {
     try {
         // Define the settings message with the correct boolean checks
-        let envSettings = `╭〔 *【ＳＩＬＶＡ】💥ＳＰＡＲＫ💥【ＭＤ】* 〕⊷
+        let envSettings = `╭〔 *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥 〕⊷
 ┃▸╭───────────
 ┃▸┃๏ *ENV SETTINGS 🗿*
 ┃▸└───────────···๏
@@ -48,15 +48,15 @@ async (conn, mek, m, { from, quoted, reply }) => {
         await conn.sendMessage(
             from,
             {
-                image: { url: 'https://files.catbox.moe/0vldgh.jpeg' }, // Image URL
+                image: { url:'https://files.catbox.moe/osou52.jpg' }, // Image URL
                 caption: envSettings,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363200367779016@newsletter',
-                        newsletterName: "THE SILVA SPARK 🥰",
+                        newsletterJid: '120363398106360290@newsletter',
+                        newsletterName: "🥰",
                         serverMessageId: 143
                     }
                 }
