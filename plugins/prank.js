@@ -10,8 +10,8 @@ cmd({
 async (conn, mek, m, { from, reply }) => {
   try {
     const steps = [
-      '🧠 *Initializing SilvaCore Intelligence...*',
-      '💻 *SILVA SPARK MD – HackSim Engine v4.0*',
+      '🧠 *Initializing loftCore Intelligence...*',
+      '💻 *loft – HackSim Engine v4.0*',
       '',
       '🔐 *Bypassing Multi-Layered Encryption...*',
       '🌐 *Connecting to Quantum Secure Network...*',
@@ -35,7 +35,7 @@ async (conn, mek, m, { from, reply }) => {
       '⚠️ _This is a simulation. No systems were harmed._',
       '🧠 _Stay ethical. Stay secure. Stay smart._',
       '',
-      '💡 *POWERED BY SILVA SPARK MD* 🔥'
+      '💡 *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥🔥'
     ];
 
     for (const step of steps) {
