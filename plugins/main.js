@@ -19,10 +19,10 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ Owner : *${config.OWNER_NAME}*
 ┃★│ Baileys : *Multi Device*
 ┃★│ Type : *NodeJs*
-┃★│ Platform : *Heroku*
+┃★│ Platform : *LOFT_HACKER*
 ┃★│ Mode : *[${config.MODE}]*
 ┃★│ Prifix : *[${config.PREFIX}]*
-┃★│ Version : *1.0.0*
+┃★│ Version : *9.0.0*
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━━┈⊷
 ╭━━〔 *Download Menu* 〕━━┈⊷
@@ -234,15 +234,15 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://i.imgur.com/PEZ5QL2.jpeg` },
+                image: { url: `https://files.catbox.moe/0wizqy.jpg` },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363200367779016@newsletter',
-                        newsletterName: 'SILVA SPARK MD 💖🦄',
+                        newsletterJid: '120363398106360290@newsletter',
+                        newsletterName: '*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥',
                         serverMessageId: 143
                     }
                 }
