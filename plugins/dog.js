@@ -14,9 +14,9 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         const response = await axios.get(apiUrl);
         const data = response.data;
 
-        await conn.sendMessage(from, { image: { url: data.message }, caption: '> *© 𝕊𝕚𝕝𝕧𝕒 𝕊𝕡𝕒𝕣𝕜 𝕄𝔻 ' }, { quoted: mek });
+        await conn.sendMessage(from, { image: { url: data.message }, caption: '> *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥' }, { quoted: mek });
     } catch (e) {
-        console.log(e); // ❯❯ 𝕊𝕚𝕝𝕧𝕒 𝕊𝕡𝕒𝕣𝕜 𝕄𝔻
+        console.log(e); // ❯❯ *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥
         reply(`єяяσя ƒєт¢нιηg ∂σg ιмαgє: ${e.message}`);
     }
 });
