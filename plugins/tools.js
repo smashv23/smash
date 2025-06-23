@@ -45,8 +45,8 @@ async (conn, mek, m, { from, isGroup, groupMetadata, reply }) => {
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363200367779016@newsletter',
-                    newsletterName: 'SILVA TECH INC',
+                    newsletterJid: '120363398106360290@newsletter',
+                    newsletterName: '*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥',
                     serverMessageId: 143,
                 },
             },
@@ -102,7 +102,7 @@ async (conn, mek, m, { from, q, reply }) => {
 
 ${joke.punchline} 😄
 
-> *© ᴘᴏᴡᴇʀᴇᴅ ʙʏ SILVA*`;
+> *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥`;
 
         return reply(jokeMessage);
     } catch (e) {
