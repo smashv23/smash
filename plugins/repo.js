@@ -39,10 +39,10 @@ async (conn, mek, m, { from, reply }) => {
         const commandFiles = fs.readdirSync('./plugins').filter(file => file.endsWith('.js')).length;
 
         const msg = `
-╭━━〔 *⎈ Silva Spark MD Runtime Info* 〕━━⊷
+╭━━〔 *𝐒𝐌𝐀𝐒𝐇-𝐕𝟏 💥 Runtime Info* 〕━━⊷
 ┃
-┃ 🧠 *Project:* Silva Spark MD
-┃ 🔗 *Repo:* https://github.com/SilvaTechB/silva-spark-md
+┃ 🧠 *Project:*𝐒𝐌𝐀𝐒𝐇-𝐕𝟏* 💥
+┃ 🔗 *Repo:* https://github.com/Smashv23/smash
 ┃ ⭐ Stars: ${stargazers_count}
 ┃ 🍴 Forks: ${forks_count}
 ┃ 👥 Estimated Users: ${estUsers}
@@ -51,15 +51,15 @@ async (conn, mek, m, { from, reply }) => {
 ┃ 🕒 Uptime: ${uptime}
 ┃ 💻 System: ${platform} (${arch})
 ┃
-╰━━━⊷ *© SilvaTech Inc 2025*`.trim();
+╰━━━⊷ *© Smash Inc 2025*`.trim();
 
         const contextInfo = {
             forwardingScore: 999,
             isForwarded: true,
             mentionedJid: [m.sender],
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363200367779016@newsletter',
-                newsletterName: 'SILVA SPARK MD 💖🦄',
+                newsletterJid: '120363398106360290@newsletter',
+                newsletterName: 'loft',
                 serverMessageId: 143
             }
         };
@@ -69,14 +69,14 @@ async (conn, mek, m, { from, reply }) => {
 
         // Send fancy image
         await conn.sendMessage(from, {
-            image: { url: 'https://files.catbox.moe/0vldgh.jpeg' },
-            caption: `✨ *Silva Spark MD: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/SilvaTechB/silva-md-bot\n⭐ Stars: ${stargazers_count}\n🍴 Forks: ${forks_count}\n👥 Users: ${estUsers}`,
+            image: { url:'https://files.catbox.moe/0wizqy.jpg' },
+            caption: `✨ *smash: Powering Smart Chats!* ✨\n\n📎 *Repo:* github.com/Smashv23/smash\n⭐ Stars: ${stargazers_count}\n🍴 Forks: ${forks_count}\n👥 Users: ${estUsers}`,
             contextInfo
         }, { quoted: mek });
 
         // Send promo audio
         await conn.sendMessage(from, {
-            audio: { url: 'https://files.catbox.moe/hpwsi2.mp3' },
+            audio: { url:'https://files.catbox.moe/0wizqy.jpg' },
             mimetype: 'audio/mp4',
             ptt: true
         }, { quoted: mek });
